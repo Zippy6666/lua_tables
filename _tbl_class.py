@@ -1,6 +1,5 @@
 from typing import Any
 
-
 class Table:
     def __init__(self, *args: Any, dict: dict[(str,int,float), Any] = {}, **kwargs: dict[str, Any]):
         """
