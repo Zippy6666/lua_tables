@@ -32,41 +32,45 @@ class Table:
         for k, v in dict.items():
             self[k] = v
 
-    def _key_type_check(func):
-        """Raise error if key is not int, float or str"""
+    def _index_type_check(func):
+        """Raise error if index is not int, float or str"""
 
-        def wrapper(self, key, *args):
-            if not isinstance(key, (int, float, str)):
+        def wrapper(self, index, *args):
+            if not isinstance(index, (int, float, str)):
                 raise TypeError("Table index must be a string or a number!")
-            return func(self, key, *args)
+            return func(self, index, *args)
 
         return wrapper
 
-    @_key_type_check
-    def __setitem__(self, key, value):
-        if isinstance(key, str):
+    @_index_type_check
+    def __setitem__(self, index, value):
+        # String index
+        if isinstance(index, str):
             if value is None:
-                delattr(self, key)
+                delattr(self, index)
             else:
-                setattr(self, key, value)
+                setattr(self, index, value)
 
-        elif isinstance(key, (int, float)):
+        # Number index
+        elif isinstance(index, (int, float)):
             if value is None:
-                del self._num_dict[key]
+                del self._num_dict[index]
             else:
-                self._num_dict[key] = value
+                self._num_dict[index] = value
 
-    @_key_type_check
-    def __getitem__(self, key):
-        if isinstance(key, str):
-            if hasattr(self, key):
-                return getattr(self, key)
+    @_index_type_check
+    def __getitem__(self, index):
+        # String index
+        if isinstance(index, str):
+            if hasattr(self, index):
+                return getattr(self, index)
             else:
                 return None
 
-        elif isinstance(key, (int, float)):
-            if key in self._num_dict:
-                return self._num_dict[key]
+        # Number index
+        elif isinstance(index, (int, float)):
+            if index in self._num_dict:
+                return self._num_dict[index]
             else:
                 return None
 
@@ -106,8 +110,7 @@ class Table:
 
 
 def main():
-    for i in Table():
-        print(i)
+    pass
 
 
 if __name__ == "__main__":
