@@ -2,7 +2,7 @@ from ._tbl_class import Table
 
 
 class _PairsTableIterator:
-    def __init__(self, table: Table, only_index:bool):
+    def __init__(self, table: Table, only_index: bool):
         self._dict = self._table_to_dict(table)
         self._only_index = only_index
 
@@ -19,7 +19,7 @@ class _PairsTableIterator:
         for i in dir(table):
             if i[0] != "_":
                 dict[i] = getattr(table, i)
-        
+
         # Get all number index values
         for k, v in table._num_dict.items():
             dict[k] = v
@@ -28,13 +28,13 @@ class _PairsTableIterator:
 
 
 class _IpairsTableIterator(_PairsTableIterator):
-    def __init__(self, table: Table, only_index:bool):
+    def __init__(self, table: Table, only_index: bool):
         super().__init__(table, only_index)
         self._table = table
 
     def __iter__(self):
         if self._only_index:
-            return iter(range(1, len(self._table)+1))
+            return iter(range(1, len(self._table) + 1))
         else:
             started = False
             n = 0
@@ -52,7 +52,7 @@ class _IpairsTableIterator(_PairsTableIterator):
                         break
 
             return iter(enumerate(list, 1))
-    
+
 
 def pairs(table: Table, only_index=False):
     """Returns a "pairs" table iterator."""
