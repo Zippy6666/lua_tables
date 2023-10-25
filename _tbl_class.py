@@ -37,7 +37,7 @@ class Table:
 
         def wrapper(self, index, *args):
             if not isinstance(index, (int, float, str)):
-                raise TypeError("Table index must be a string or a number!")
+                raise TypeError("table index must be a string or a number")
             return func(self, index, *args)
 
         return wrapper
