@@ -1,0 +1,1 @@
+Create file os.getcwd() + '/table_library' to make the table library into a Table object instead of a class.
