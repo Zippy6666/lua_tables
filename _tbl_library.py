@@ -4,11 +4,6 @@ from typing import Any
 import os
 
 
-"""
-Create file os.getcwd() + '/table_library' to make the table library into a Table object instead of a class.
-"""
-
-
 _TABLE_LIBRARY_AS_TABLE_OBJECT = os.path.isfile(os.getcwd() + "/table_library")
 
 
