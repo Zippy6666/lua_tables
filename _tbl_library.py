@@ -1,10 +1,34 @@
-from ._pairs import ipairs
+from ._pairs import ipairs, pairs
 from ._tbl_class import Table
 from typing import Any
 import os
 
 
 _TABLE_LIBRARY_AS_TABLE_OBJECT = os.path.isfile(os.getcwd() + "/table_library")
+
+
+def _table_can_shift(table: Table, pos: int) -> bool:
+    for k in ipairs(table, True):
+        if k == pos:
+            return True
+
+    return False
+
+
+def _table_shift(table: Table, pos: int, shift:int):
+    started = False
+    for k, v in ipairs(table):
+        if k == pos:
+            table[k] = None
+            started = True
+
+        if started:
+            table[k + shift] = v
+
+    if not started:
+        return False
+    
+    return True
 
 
 def _table_insert_last(table: Table, value: Any):
@@ -15,17 +39,31 @@ def _table_insert_pos(table: Table, pos: int, value: Any):
     if not isinstance(pos, int):
         raise TypeError("position argument must be of type 'int'")
 
-    started = False
-    for k, v in ipairs(table):
-        if k == pos:
-            table[k] = value
-            started = True
-
-        if started:
-            table[k + 1] = v
-
-    if not started:
+    if _table_can_shift(pos):
+        table[pos] = value
+        _table_shift(table, pos, 1)
+    else:
         raise TypeError("bad argument 'position' to 'insert' (position out of bounds)")
+
+
+def _table_remove_last(table: Table) -> Any:
+    val = table[len(table)]
+    table[len(table)] = None
+    return val
+
+
+def _table_remove_pos(table: Table, pos: int) -> Any:
+    if not isinstance(pos, int):
+        raise TypeError("position argument must be of type 'int'")
+    
+    val = table[pos]
+
+    if _table_can_shift(pos):
+        _table_shift(table, pos, -1)
+    else:
+        raise TypeError("bad argument 'position' to 'insert' (position out of bounds)")
+    
+    return val
 
 
 # 'table' library
@@ -33,47 +71,42 @@ class table:
     def __new__(cls):
         raise TypeError("cannot create 'table' instances")
 
-    def insert(table: Table, *args: Any) -> None:
+    def insert(t: Table, *args: Any) -> None:
         """
-        Syntax:
-                table.insert(table:Table, element:Any)
+        table.insert(table:Table, element:Any) - Append an element to the table
             or
-                table.insert(table:Table, position:int, element:Any)
-
-        From lua.org:
-            \"The table.insert function inserts an element in a given position of an array, moving up other elements to open space.\"
-            \"As a special (and frequent) case, if we call insert without a position, it inserts the element in the last position of the array (and, therefore, moves no elements).\"
+        table.insert(table:Table, position:int, element:Any) - Insert an element at index 'position' and shift the following indexes up by one step
         """
 
         match len(args):
             case 1:
-                _table_insert_last(table, args[0])
+                _table_insert_last(t, args[0])
             case 2:
-                _table_insert_pos(table, args[0], args[1])
+                _table_insert_pos(t, args[0], args[1])
             case _:
                 raise TypeError("wrong number of arguments to 'insert'")
 
-    def remove(table: Table):
-        pass
+    def remove(t: Table, *args) -> Any:
+        """
+        table.remove(table:Table, position:int) - something
+            or
+        table.remove(table:Table) - something
+        """
+        match len(args):
+            case 0:
+                return _table_remove_last(t)
+            case 1:
+                return _table_remove_pos(t, args[0])
+            case _:
+                raise TypeError("wrong number of arguments to 'remove'")
+    
+    # def eremove( t:Table, element:Any, amount ) -> Any:
+    #     for k, v in pairs(t):
+    #         if v==element:
+    #             t[k] = None
 
-    def RemoveByValue(table: Table):
-        pass
-
-    def Count(table: Table):
-        pass
-
-    def IsEmpty(table: Table):
-        pass
-
-    def Empty(table: Table):
-        pass
-
-    def Random(table: Table):
-        pass
-
-
-def PrintTable(table: Table) -> None:
-    pass
+    # def count( t:Table ) -> int:
+    #     print(t)
 
 
 if _TABLE_LIBRARY_AS_TABLE_OBJECT:

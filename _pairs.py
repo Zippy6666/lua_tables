@@ -1,9 +1,30 @@
 from ._tbl_class import Table
 
 
+"""
+Todo:
+    - Remove only_index system
+"""
+
+
+def _table_to_dict(table: Table):
+    dict = {}
+
+    # Get all string index values
+    for i in dir(table):
+        if i[0] != "_":
+            dict[i] = getattr(table, i)
+
+    # Get all number index values
+    for k, v in table._num_dict.items():
+        dict[k] = v
+
+    return dict
+
+
 class _PairsTableIterator:
     def __init__(self, table: Table, only_index: bool):
-        self._dict = self._table_to_dict(table)
+        self._dict = _table_to_dict(table)
         self._only_index = only_index
 
     def __iter__(self):
@@ -11,20 +32,6 @@ class _PairsTableIterator:
             return iter(self._dict)
         else:
             return iter(self._dict.items())
-
-    def _table_to_dict(self, table: Table):
-        dict = {}
-
-        # Get all string index values
-        for i in dir(table):
-            if i[0] != "_":
-                dict[i] = getattr(table, i)
-
-        # Get all number index values
-        for k, v in table._num_dict.items():
-            dict[k] = v
-
-        return dict
 
 
 class _IpairsTableIterator(_PairsTableIterator):
