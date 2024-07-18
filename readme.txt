@@ -1,1 +1,2 @@
-Create file os.getcwd() + '/table_library' to make the table library into a Table object instead of a class.
+# Lua Tables
+A Python package that tries to implement Lua-inspired tables.
